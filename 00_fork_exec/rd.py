@@ -1,3 +1,8 @@
+"""
+Starting a new process
+Goal: We want to start a new linux process using the fork & exec model
+"""
+
 from typing import List
 import os
 import click
@@ -10,11 +15,15 @@ def cli():
 
 
 def contain(command: List[str]):
-    os.execv(command[0], [command[0], command[1]])
+    os.execv(command[0], command)
 
 
-@cli.command()
-@click.argument("command", required=True, nargs=2)
+@cli.command(
+    context_settings=dict(
+        ignore_unknown_options=True,
+    )
+)
+@click.argument("Command", required=True, nargs=2)
 def run(command: List[str]):
     pid = os.fork()
 
