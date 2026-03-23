@@ -3,10 +3,11 @@ Starting a new process
 Goal: We want to start a new linux process using the fork & exec model
 """
 
-from typing import List
 import os
-import click
 import traceback
+from typing import List
+
+import click
 
 
 @click.group()
@@ -34,9 +35,9 @@ def run(command: List[str]):
             traceback.print_exc()
             os._exit(1)
 
-    waitedpid, status = os.waitpid(pid, 0)
+    _, status = os.waitpid(pid, 0)
 
-    print(f"{waitedpid} exited with status {status}")
+    print(f"{pid} exited with status {status}")
 
 
 if __name__ == "__main__":

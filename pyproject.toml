@@ -12,3 +12,20 @@ dependencies = [
 [tool.setuptools]
 packages = ["linux"]
 package-dir = {"linux" = "."} 
+
+
+[tool.ruff]
+exclude = [
+  ".git",
+  ".venv"
+]
+
+line-length = 79
+
+[tool.ruff.lint]
+select = ["E", "F", "I","W","TCH"]
+extend-select = ["T100"]
+
+
+[tool.ruff.format]
+indent-style="space"

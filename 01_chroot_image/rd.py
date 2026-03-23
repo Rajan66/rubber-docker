@@ -3,15 +3,14 @@ Chrooting into an image
 Goal: Let's get some filesystem isolation with chroot
 """
 
-from typing import List
 import os
-from pathlib import Path
 import tarfile
 import traceback
 import uuid
+from typing import List
 
-import linux
 import click
+import linux
 
 
 def _get_image_path(image_name, image_dir, image_suffix="tar.gz"):
@@ -52,8 +51,12 @@ def cli():
     pass
 
 
-def contain(image_name, image_dir, container_id, container_dir, command: List[str]):
-    new_root = create_container_root(image_name, image_dir, container_id, container_dir)
+def contain(
+    image_name, image_dir, container_id, container_dir, command: List[str]
+):
+    new_root = create_container_root(
+        image_name, image_dir, container_id, container_dir
+    )
     linux.mount("proc", os.path.join(new_root, "proc"), "proc", 0, "")
     linux.mount("sys", os.path.join(new_root, "sys"), "sysfs", 0, "")
     linux.mount(
@@ -67,7 +70,7 @@ def contain(image_name, image_dir, container_id, container_dir, command: List[st
     os.chroot(new_root)
     print("New root", new_root)
     print(
-        f"Created a new root for our container: {container_dir}/rootfs/{container_id}"
+        f"Created a new root for our container: {container_dir}/rootfs/{container_id}"  # noqa
     )
 
     os.chdir("/")
@@ -79,7 +82,7 @@ def contain(image_name, image_dir, container_id, container_dir, command: List[st
 @click.option(
     "--image-dir",
     help="Images directory",
-    default="/home/rajan/Downloads/zips/",
+    default="/home/rajan/Downloads/zips/os/",
 )
 @click.option(
     "--container-dir",
@@ -93,14 +96,16 @@ def run(image_name, image_dir, container_dir, command):
 
     if pid == 0:
         try:
-            contain(image_name, image_dir, container_id, container_dir, command)
+            contain(
+                image_name, image_dir, container_id, container_dir, command
+            )
         except Exception:
             traceback.print_exc()
             os._exit(0)
 
-    waited_pid, status = os.waitpid(pid, 0)
+    _, status = os.waitpid(pid, 0)
 
-    print(f"{waited_pid} exited with status {status}")
+    print(f"{pid} exited with status {status}")
 
 
 if __name__ == "__main__":
